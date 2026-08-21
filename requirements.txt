@@ -1,0 +1,15 @@
+﻿fastapi
+uvicorn
+websockets
+python-dotenv
+qdrant-client
+sentence-transformers
+datasets
+huggingface_hub
+openai
+langchain-core
+nemoguardrails
+numpy
+pydantic
+rich
+httpx
