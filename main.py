@@ -93,15 +93,15 @@ async def run_pipeline_stream(transcript: str, request_id: str):
         "ms": t.elapsed_ms
     }, request_id)
 
-    # ── Stage 4: Hybrid retrieval + reranking ───────────────────────
-    yield sse("retrieval", "running", {"strategy": "hybrid + cross-encoder"}, request_id)
+    # ── Stage 4: Live Internet Web Retrieval + Neural Reranking ───────
+    yield sse("retrieval", "running", {"strategy": "live internet search + cross-encoder"}, request_id)
     with Timer() as t:
         chunks = await retrieve(state, top_k=5)  # reads/writes state
     state.retrieve_ms = t.elapsed_ms
 
     if not chunks:
         no_result = {
-            "answer": "No relevant passages found in the dataset for this query.",
+            "answer": "No relevant information found on the web for this query.",
             "source_passage_text": "", "confidence": 0.0, "grounded": False
         }
         yield sse("retrieval", "empty", {"ms": t.elapsed_ms}, request_id)
@@ -117,12 +117,13 @@ async def run_pipeline_stream(transcript: str, request_id: str):
         "top_relevance_scores": top_probs,   # 0-1 probabilities, not raw logits
         "top_passages_preview": [c["text"][:120] + "..." for c in chunks[:3]],
         "strategies_used": list({c["strategy"] for c in chunks}),
+        "sources": [c.get("title", "Web Source") for c in chunks[:3]],
         "ms": t.elapsed_ms
     }, request_id)
 
     # ── Stage 5: Answer generation ───────────────────────────────────
     yield sse("generation", "running", {
-        "model": "claude-sonnet-4-6",
+        "model": "nvidia/nemotron-mini-4b-instruct",
         "context_chunks": len(chunks)
     }, request_id)
     with Timer() as t:
@@ -174,6 +175,8 @@ async def run_pipeline_stream(transcript: str, request_id: str):
         "grounded": answer.grounded,
         "top_passages": [
             {
+                "title": c.get("title", "Web Source"),
+                "url": c.get("url", ""),
                 "text": c["text"],
                 "passage_id": c["passage_id"],
                 "relevance": c.get("rerank_prob", 0.0)

@@ -786,12 +786,12 @@
                 <div class="stage-card waiting" id="card_retrieval">
                     <div class="stage-header">
                         <div class="stage-left">
-                            <span class="stage-icon">🔍</span>
-                            <span class="stage-name">Hybrid Retrieval & Cross-Encoder</span>
+                            <span class="stage-icon">🌐</span>
+                            <span class="stage-name">Live Web Search & Neural Reranking</span>
                         </div>
                         <span class="stage-status-badge">Waiting</span>
                     </div>
-                    <div class="stage-details" id="details_retrieval">Qdrant HNSW + BM25 + Cross-Encoder MiniLM reranking</div>
+                    <div class="stage-details" id="details_retrieval">Live internet search + Cross-Encoder neural reranking</div>
                 </div>
 
                 <!-- Stage 5: Generation -->
@@ -803,7 +803,7 @@
                         </div>
                         <span class="stage-status-badge">Waiting</span>
                     </div>
-                    <div class="stage-details" id="details_generation">PydanticAI fact extractor grounded in source passages</div>
+                    <div class="stage-details" id="details_generation">Precision fact extractor grounded in live internet sources</div>
                 </div>
             </div>
         </div>
@@ -811,7 +811,7 @@
         <!-- ─── ANSWER RESULT BOX ─── -->
         <div class="answer-container" id="answerContainer">
             <div class="answer-header">
-                <div class="answer-title">Direct Answer (MSMARCO Grounded)</div>
+                <div class="answer-title">Direct Answer (Live Internet Grounded)</div>
                 <div class="answer-badges">
                     <span class="confidence-badge confidence-high" id="confBadge">Confidence: 95%</span>
                     <span class="latency-total-badge" id="totalLatencyBadge">⚡ 88ms</span>
@@ -823,7 +823,7 @@
             </div>
 
             <details class="source-accordion" open>
-                <summary>📖 Primary Source Passage</summary>
+                <summary>📖 Primary Web Source Passage</summary>
                 <div class="source-content" id="sourcePassageText">
                     Source text will appear here...
                 </div>
@@ -951,7 +951,7 @@
                 const hadText = searchInput.value.trim();
                 stopRecording();
                 if (hadText) {
-                    micLabel.textContent = 'Transcribed! Searching dataset...';
+                    micLabel.textContent = 'Transcribed! Searching web...';
                     submitQuery(hadText);
                 } else {
                     micLabel.textContent = 'Click orb to speak';
@@ -1166,7 +1166,7 @@
             totalLatencyBadge.textContent = `⚡ ${totalMs}ms`;
 
             answerText.textContent = result.answer || 'No direct answer found.';
-            sourcePassageText.textContent = result.source_passage_text || 'Exact source passage text from MSMARCO-XI dataset.';
+            sourcePassageText.textContent = result.source_passage_text || 'Exact source passage text from live web search.';
 
             if (candidateList) {
                 candidateList.innerHTML = '';
@@ -1175,9 +1175,10 @@
                     const card = document.createElement('div');
                     card.className = 'candidate-card';
                     const rel = Math.round((p.relevance ?? 0.85) * 100);
+                    const urlLink = p.url ? `<a href="${escapeHtml(p.url)}" target="_blank" style="color:var(--primary-light); text-decoration:none; margin-left:8px;">🔗 ${escapeHtml(p.title || 'Source')}</a>` : '';
                     card.innerHTML = `
                         <div class="candidate-meta">
-                            <span>Candidate #${idx + 1}</span>
+                            <span>Candidate #${idx + 1} ${urlLink}</span>
                             <span>Score: ${rel}%</span>
                         </div>
                         <div>${escapeHtml(p.text || '')}</div>
