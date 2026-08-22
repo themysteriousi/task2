@@ -1,0 +1,193 @@
+---
+title: LiveKit Voice UI for React
+description: Add a LiveKit Agents voice UI to React with orb-ui's adapter, animated orb visuals, and audio-reactive state.
+---
+
+LiveKit Agents handles the realtime media and agent session layer. orb-ui handles the browser Room,
+microphone and agent audio, normalized conversation state, and the visible React UI.
+
+The token-endpoint example below is the intended application setup. The dedicated LiveKit
+entrypoint imports the official SDK only for LiveKit users and hides its mechanical constructors and
+audio analyser setup. Existing-room, raw credential, and custom fetcher modes remain advanced
+alternatives.
+
+## Install
+
+Install orb-ui and the LiveKit client package used by your app:
+
+```bash
+npm install orb-ui livekit-client
+```
+
+## Use a token endpoint
+
+In the recommended setup, your app exposes a token endpoint and the adapter fetches fresh LiveKit
+connection details when the orb starts. Use LiveKit's TokenSource endpoint contract: the JSON
+response includes `{ server_url, participant_token }`. The adapter generates a unique
+`orb-<uuid>` room name for every start.
+
+```tsx
+import { Orb } from 'orb-ui'
+import { createLiveKitAdapter } from 'orb-ui/adapters/livekit'
+
+const adapter = createLiveKitAdapter({
+  tokenEndpoint: '/api/livekit-token',
+  agentName: 'your-agent-name',
+})
+
+export function LiveKitVoiceUI() {
+  return <Orb adapter={adapter} theme="circle" aria-label="Start LiveKit assistant" />
+}
+```
+
+`agentName` is optional when your token endpoint already decides which agent to dispatch. Override
+`roomName` only when your app needs a specific room:
+
+```tsx
+const adapter = createLiveKitAdapter({
+  tokenEndpoint: '/api/livekit-token',
+  agentName: 'your-agent-name',
+  roomName: () => `support-${customerId}-${crypto.randomUUID()}`,
+})
+```
+
+## Use a LiveKit Cloud sandbox
+
+For local and preview testing, LiveKit's sandbox token server can generate connection details without
+your own backend. Do not use this mode in production.
+
+```tsx
+import { Orb } from 'orb-ui'
+import { createLiveKitAdapter } from 'orb-ui/adapters/livekit'
+
+const adapter = createLiveKitAdapter({
+  sandboxId: 'token-server-abc123',
+  agentName: 'your-agent-name',
+})
+
+export function LiveKitVoiceUI() {
+  return <Orb adapter={adapter} theme="circle" aria-label="Start LiveKit assistant" />
+}
+```
+
+## Advanced connection ownership
+
+Import from `orb-ui/adapters` when your application already owns the connection fetcher, Room,
+token source, or runtime helpers. For example, a custom connection fetcher can inspect your own
+application state:
+
+```tsx
+import { Room, createAudioAnalyser } from 'livekit-client'
+import { createLiveKitAdapter } from 'orb-ui/adapters'
+
+const adapter = createLiveKitAdapter({
+  getConnectionDetails: async ({ agentName, roomName }) => {
+    const response = await fetch('/api/livekit-token', {
+      method: 'POST',
+      body: JSON.stringify({ agentName, roomName }),
+    })
+
+    return response.json()
+  },
+  tokenOptions: {
+    agentName: 'your-agent-name',
+    roomName: () => `orb-${crypto.randomUUID()}`,
+  },
+  createAudioAnalyser,
+  RoomClass: Room,
+})
+```
+
+## Use an existing room
+
+Use an existing room when your app already owns the LiveKit lifecycle. The adapter subscribes to
+room state but does not expose `start` or `stop`.
+
+```tsx
+import { createAudioAnalyser } from 'livekit-client'
+import { Orb } from 'orb-ui'
+import { createLiveKitAdapter } from 'orb-ui/adapters'
+
+const adapter = createLiveKitAdapter({
+  room,
+  createAudioAnalyser,
+})
+
+export function LiveKitVoiceUI() {
+  return <Orb adapter={adapter} theme="circle" aria-label="LiveKit assistant status" />
+}
+```
+
+## Use raw connection details
+
+Raw credentials are supported as an advanced escape hatch. Generate participant tokens on your
+server, keep them short-lived, and avoid hard-coding them in browser bundles.
+
+```tsx
+const adapter = createLiveKitAdapter({
+  serverUrl: 'wss://your-project.livekit.cloud',
+  participantToken: 'short-lived-participant-token',
+  createAudioAnalyser,
+  RoomClass: Room,
+})
+```
+
+## State mapping
+
+The adapter reads the agent participant's `lk.agent.state` attribute and maps LiveKit state into orb-ui state:
+
+- `speaking` -> `speaking`
+- `thinking` -> `thinking`
+- `listening` and `idle` -> `listening`
+- `connecting`, `pre-connect-buffering`, and `initializing` -> `connecting`
+- `disconnected` -> `idle`
+- `failed` -> `error`
+
+LiveKit remote agent audio is attached when available. The recommended browser entrypoint creates
+the SDK audio analysers automatically: the local microphone emits normalized `inputVolume` while
+the agent is listening, and remote agent audio emits normalized `outputVolume` while the agent is
+speaking. The shared `volume` value follows whichever side is active so every orb-ui theme reacts
+correctly. The adapter supplies a speech-oriented decibel range to LiveKit's analyser instead of
+using its narrow defaults, then applies independent attack and release smoothing so normal speech
+retains word-level movement instead of staying near one level.
+
+## Output calibration
+
+The default output curve is tuned against a real LiveKit agent session using the `cloud` theme for
+pronounced word-level movement without pinning the signal at maximum. It is a provider baseline,
+not a guarantee that every theme will feel identical. For a different theme or unusual audio mix,
+pass a partial `outputVolumeCalibration` object, or a getter when controls need to update during a
+live session:
+
+```tsx
+const adapter = createLiveKitAdapter({
+  tokenEndpoint: '/api/livekit-token',
+  agentName: 'your-agent-name',
+  outputVolumeCalibration: {
+    release: 0.12,
+  },
+  onOutputVolumeSample: ({ raw, shaped, normalized }) => {
+    console.debug({ raw, shaped, normalized })
+  },
+})
+```
+
+## Token handling
+
+Do not create LiveKit access tokens in the browser. Point `tokenEndpoint` at a server-backed route
+that generates short-lived participant tokens. `TokenSource` and `getConnectionDetails` remain
+available through the advanced entrypoint when your application needs to own that behavior.
+
+## Controlled mode
+
+If your app already normalizes LiveKit state and volume, pass those values directly as a signal.
+
+```tsx
+<Orb signal={{ state: voiceState, inputVolume, outputVolume }} theme="circle" />
+```
+
+## Related
+
+- [Voice agent interface design guide](/guides/voice-agent-ui)
+- [Adapter overview](/adapters/overview)
+- [Themes and voice states](/themes/voice-states)

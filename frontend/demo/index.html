@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>orb-ui: React Voice Agent UI Components</title>
+    <meta
+      name="description"
+      content="React components for voice agent UIs. Add animated voice orbs, audio-reactive themes, and provider adapters for Vapi, ElevenLabs, and custom realtime voice AI apps."
+    />
+    <link rel="canonical" href="https://orb-ui.com/" />
+    <meta name="theme-color" content="#0a0a0a" />
+    <meta name="color-scheme" content="dark light" />
+    <link rel="icon" href="/favicon.ico" sizes="any" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="orb-ui" />
+    <meta property="og:url" content="https://orb-ui.com/" />
+    <meta property="og:title" content="orb-ui: React Voice Agent UI Components" />
+    <meta
+      property="og:description"
+      content="React components for voice agent UIs. Add animated voice orbs, audio-reactive themes, and provider adapters for Vapi, ElevenLabs, and custom realtime voice AI apps."
+    />
+    <meta property="og:image" content="https://orb-ui.com/og-image-v2.jpg" />
+    <meta property="og:image:type" content="image/jpeg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta
+      property="og:image:alt"
+      content="orb-ui — Voice agent UI that feels alive, with a blue animated voice orb."
+    />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="orb-ui: React Voice Agent UI Components" />
+    <meta
+      name="twitter:description"
+      content="React components for voice agent UIs. Add animated voice orbs, audio-reactive themes, and provider adapters for Vapi, ElevenLabs, and custom realtime voice AI apps."
+    />
+    <meta name="twitter:image" content="https://orb-ui.com/og-image-v2.jpg" />
+    <meta
+      name="twitter:image:alt"
+      content="orb-ui — Voice agent UI that feels alive, with a blue animated voice orb."
+    />
+
+    <!-- Additional SEO -->
+    <meta name="author" content="Alexander Chen" />
+    <meta name="robots" content="index, follow" />
+    <meta name="google-site-verification" content="shJK4uVvg_6sQUefiI-YbqhaB_p3SO4iJ0y3w-GvbpM" />
+
+    <!-- JSON-LD Structured Data -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "SoftwareSourceCode",
+        "name": "orb-ui",
+        "description": "React voice agent UI component library with animated voice orbs, audio-reactive themes, and adapters for Vapi, ElevenLabs, and custom realtime voice AI apps.",
+        "url": "https://orb-ui.com/",
+        "codeRepository": "https://github.com/alexanderqchen/orb-ui",
+        "downloadUrl": "https://www.npmjs.com/package/orb-ui",
+        "applicationCategory": "DeveloperApplication",
+        "programmingLanguage": "TypeScript",
+        "runtimePlatform": "React",
+        "license": "https://opensource.org/licenses/MIT",
+        "sameAs": [
+          "https://github.com/alexanderqchen/orb-ui",
+          "https://www.npmjs.com/package/orb-ui"
+        ],
+        "author": {
+          "@type": "Person",
+          "name": "Alexander Chen",
+          "url": "https://alexanderqchen.com"
+        }
+      }
+    </script>
+    <script>
+      !(function (t, e) {
+        var o, n, p, r
+        e.__SV ||
+          ((window.posthog = e),
+          (e._i = []),
+          (e.init = function (i, s, a) {
+            function g(t, e) {
+              var o = e.split('.')
+              ;(2 == o.length && ((t = t[o[0]]), (e = o[1])),
+                (t[e] = function () {
+                  t.push([e].concat(Array.prototype.slice.call(arguments, 0)))
+                }))
+            }
+            ;(((p = t.createElement('script')).type = 'text/javascript'),
+              (p.crossOrigin = 'anonymous'),
+              (p.async = !0),
+              (p.src =
+                s.api_host.replace('.i.posthog.com', '-assets.i.posthog.com') + '/static/array.js'),
+              (r = t.getElementsByTagName('script')[0]).parentNode.insertBefore(p, r))
+            var u = e
+            for (
+              void 0 !== a ? (u = e[a] = []) : (a = 'posthog'),
+                u.people = u.people || [],
+                u.toString = function (t) {
+                  var e = 'posthog'
+                  return ('posthog' !== a && (e += '.' + a), t || (e += ' (stub)'), e)
+                },
+                u.people.toString = function () {
+                  return u.toString(1) + '.people (stub)'
+                },
+                o =
+                  'init capture register register_once register_for_session unregister unregister_for_session getFeatureFlag getFeatureFlagPayload isFeatureEnabled reloadFeatureFlags updateEarlyAccessFeatureEnrollment getEarlyAccessFeatures on onFeatureFlags onSessionId getSurveys getActiveMatchingSurveys renderSurvey canRenderSurvey getNextSurveyStep identify setPersonProperties group resetGroups setPersonPropertiesForFlags resetPersonPropertiesForFlags setGroupPropertiesForFlags resetGroupPropertiesForFlags reset get_distinct_id getGroups get_session_id get_session_replay_url alias set_config startSessionRecording stopSessionRecording sessionRecordingStarted captureException loadToolbar get_property getSessionProperty createPersonProfile opt_in_capturing opt_out_capturing has_opted_in_capturing has_opted_out_capturing clear_opt_in_out_capturing debug'.split(
+                    ' ',
+                  ),
+                n = 0;
+              n < o.length;
+              n++
+            )
+              g(u, o[n])
+            e._i.push([i, s, a])
+          }),
+          (e.__SV = 1))
+      })(document, window.posthog || [])
+      posthog.init('phc_U5BI9zJCRMtmbd1nhlpg2e0cdsAymmgdbZpFYbVXBJQ', {
+        api_host: 'https://us.i.posthog.com',
+        person_profiles: 'identified_only',
+        capture_pageview: true,
+        capture_pageleave: true,
+        session_recording: {
+          maskAllInputs: false,
+          maskTextSelector: '',
+        },
+      })
+    </script>
+    <style>
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      body {
+        background: #0a0a0a;
+        color: #ccc;
+        font-family: monospace;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

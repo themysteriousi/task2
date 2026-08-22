@@ -1,0 +1,211 @@
+---
+title: React voice agent UI quickstart
+description: Install orb-ui and add an animated voice agent UI to a React app.
+---
+
+Install orb-ui from npm:
+
+```bash
+npm install orb-ui
+```
+
+Provider adapters also need their provider SDK installed in your app:
+
+```bash
+npm install orb-ui @vapi-ai/web
+npm install orb-ui @elevenlabs/client
+npm install orb-ui livekit-client
+npm install orb-ui @pipecat-ai/client-js @pipecat-ai/small-webrtc-transport
+npm install orb-ui @google/genai
+```
+
+OpenAI Realtime uses browser WebRTC and does not require an additional client SDK. Standard OpenAI
+and Gemini API keys stay on your server. See the [adapter overview](/adapters/overview) for a concise
+comparison of what each provider setup requires.
+
+## Controlled mode
+
+Controlled mode is the universal fallback. Use it when your app already owns the voice session and can provide a conversation state plus normalized volume.
+
+```tsx
+import { Orb } from 'orb-ui'
+
+export function VoiceAgentStatus({ state, volume }) {
+  return <Orb state={state} volume={volume} theme="circle" size={240} />
+}
+```
+
+The state can be one of:
+
+- `idle`
+- `connecting`
+- `listening`
+- `thinking`
+- `speaking`
+- `error`
+
+Volume should be a number from `0` to `1`.
+
+Use `signal` when your app has separate user input and assistant output levels:
+
+```tsx
+import { Orb } from 'orb-ui'
+
+export function VoiceAgentStatus({ signal }) {
+  return <Orb signal={signal} theme="circle" size={240} />
+}
+```
+
+## Vapi
+
+```tsx
+import Vapi from '@vapi-ai/web'
+import { Orb } from 'orb-ui'
+import { createVapiAdapter } from 'orb-ui/adapters'
+
+const vapi = new Vapi('your-public-key')
+const adapter = createVapiAdapter(vapi, {
+  assistantId: 'your-assistant-id',
+})
+
+export function VapiVoiceUI() {
+  return <Orb adapter={adapter} theme="circle" aria-label="Start Vapi assistant" />
+}
+```
+
+## ElevenLabs
+
+```tsx
+import { Conversation } from '@elevenlabs/client'
+import { Orb } from 'orb-ui'
+import { createElevenLabsAdapter } from 'orb-ui/adapters'
+
+const adapter = createElevenLabsAdapter(Conversation, {
+  agentId: 'your-agent-id',
+})
+
+export function ElevenLabsVoiceUI() {
+  return <Orb adapter={adapter} theme="bars" aria-label="Start ElevenLabs assistant" />
+}
+```
+
+## LiveKit
+
+```tsx
+import { Orb } from 'orb-ui'
+import { createLiveKitAdapter } from 'orb-ui/adapters/livekit'
+
+const adapter = createLiveKitAdapter({
+  tokenEndpoint: '/api/livekit-token',
+  agentName: 'your-agent-name',
+})
+
+export function LiveKitVoiceUI() {
+  return <Orb adapter={adapter} theme="circle" aria-label="Start LiveKit assistant" />
+}
+```
+
+While the agent is listening, the adapter emits local microphone activity as `inputVolume`. While
+the agent is speaking, it emits the attached remote audio level as `outputVolume`. The adapter owns
+the LiveKit room, token source, audio analysis, and a fresh room name for each start.
+
+## Pipecat
+
+```tsx
+import { PipecatClient } from '@pipecat-ai/client-js'
+import { SmallWebRTCTransport } from '@pipecat-ai/small-webrtc-transport'
+import { Orb } from 'orb-ui'
+import { createPipecatAdapter } from 'orb-ui/adapters'
+
+const client = new PipecatClient({ transport: new SmallWebRTCTransport(), enableMic: true })
+const adapter = createPipecatAdapter(client, {
+  connect: () => client.connect({ webrtcUrl: 'https://agent.example.com/api/offer' }),
+})
+
+export function PipecatVoiceUI() {
+  return <Orb adapter={adapter} theme="circle" aria-label="Start Pipecat assistant" />
+}
+```
+
+See the [Pipecat adapter guide](/adapters/pipecat) for Pipecat Cloud and Daily.
+
+## OpenAI Realtime
+
+```tsx
+import { Orb } from 'orb-ui'
+import { createOpenAIRealtimeAdapter } from 'orb-ui/adapters'
+
+const adapter = createOpenAIRealtimeAdapter({
+  getClientSecret: async () => {
+    const response = await fetch('/api/openai-realtime-token', { method: 'POST' })
+    const data = await response.json()
+    return data.value
+  },
+})
+
+export function OpenAIRealtimeVoiceUI() {
+  return <Orb adapter={adapter} theme="circle" aria-label="Start OpenAI assistant" />
+}
+```
+
+The endpoint must mint short-lived credentials with your server-only API key. See the
+[OpenAI Realtime adapter guide](/adapters/openai-realtime).
+
+## Gemini Live
+
+```tsx
+import { GoogleGenAI } from '@google/genai'
+import { Orb } from 'orb-ui'
+import { createGeminiLiveAdapter } from 'orb-ui/adapters'
+
+const adapter = createGeminiLiveAdapter({
+  connect: async (callbacks) => {
+    const token = await fetch('/api/gemini-live-token', { method: 'POST' }).then((res) =>
+      res.json(),
+    )
+    const client = new GoogleGenAI({
+      apiKey: token.value,
+      httpOptions: { apiVersion: 'v1alpha' },
+    })
+    return client.live.connect({ model: token.model, config: token.config, callbacks })
+  },
+})
+
+export function GeminiLiveVoiceUI() {
+  return <Orb adapter={adapter} theme="circle" aria-label="Start Gemini assistant" />
+}
+```
+
+See the [Gemini Live adapter guide](/adapters/gemini-live) for ephemeral token creation and the
+matching server-side activity-detection config.
+
+## External session controls
+
+Set `interactive={false}` when the orb should only display adapter state. Use the adapter's public
+lifecycle methods from controls placed elsewhere in your interface.
+
+```tsx
+export function VoiceExperience({ adapter }) {
+  return (
+    <>
+      <Orb adapter={adapter} theme="cloud" interactive={false} />
+      <button onClick={() => void adapter.start?.()}>Start conversation</button>
+      <button onClick={() => void adapter.stop?.()}>End conversation</button>
+    </>
+  )
+}
+```
+
+## Themes
+
+Start with:
+
+- `radial` for a four-lobe call surface with different input and output reactions.
+- `cloud` for a soft atmospheric sphere with distinct listening and speaking motion.
+- `circle` for a primary assistant orb.
+- `bars` for waveform-like audio activity.
+- `debug` while verifying state and volume changes.
+
+Visual themes include keyboard-accessible buttons when you provide an adapter or `onStart`/`onStop` handler. Add an `aria-label` if the surrounding UI does not already label the control, or pass `interactive={false}` when a separate control owns the session lifecycle.
+
+Use the [voice states guide](/themes/voice-states) when you are deciding how each state should appear in your product.

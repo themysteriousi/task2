@@ -1,0 +1,122 @@
+---
+title: Voice Orb Themes and States for React
+description: Choose accessible React voice orb themes for idle, connecting, listening, thinking, speaking, and error states.
+---
+
+orb-ui ships with React voice orb themes for common voice agent UI roles. Each theme maps the same
+session states into a different visual treatment, so teams can change the presentation without
+rewriting provider or audio logic.
+
+## Choose a theme by interaction role
+
+| Theme    | Best fit                                                       | Control model          |
+| -------- | -------------------------------------------------------------- | ---------------------- |
+| `radial` | A prominent call surface with distinct input and output motion | Interactive or passive |
+| `cloud`  | A calm assistant presence beside separate controls             | Usually passive        |
+| `circle` | A compact, primary voice-assistant control                     | Interactive or passive |
+| `bars`   | A waveform-adjacent status visualization                       | Interactive or passive |
+| `debug`  | Adapter setup and normalized-signal inspection                 | Development only       |
+
+Choose based on the job the visualization performs, not only its appearance. A support workflow
+with permanent mute and end-call buttons may benefit from a passive theme, while a compact
+assistant launcher can use a clickable circle.
+
+## Radial
+
+Use `radial` for a colorful call surface with separate visual responses for each side of the
+conversation:
+
+- `idle` lets the four-lobe field drift slowly back and forth; the interactive form shows a black phone control.
+- `connecting` replaces the phone with a compact loading indicator.
+- `listening` moves the translucent outer membrane inward as input volume rises while traveling waves reshape its inner edge and the field oscillates in both directions.
+- `speaking` swings the inner radial field back and forth at a changing pace while keeping the membrane calm.
+- `thinking` reuses the quiet listening baseline without inventing another visual signal.
+
+```tsx
+<Orb adapter={adapter} theme="radial" aria-label="Start voice assistant" />
+```
+
+The phone control is separate from the canvas, so clicking the artwork does not start or stop the
+session. Match the cutout around it to your page with
+`style={{ '--orb-ui-radial-control-surround': '#101010' }}`. Pass `interactive={false}` when your
+application already owns its call controls.
+
+## Cloud
+
+Use `cloud` for a calm, atmospheric assistant presence. It keeps one blue-violet palette while
+communicating turn ownership through opposing scale and motion:
+
+- `connecting` shows a compact spinner before the sphere enters from a dot.
+- `listening` moves slowly and shrinks as input volume rises.
+- `speaking` grows with output volume and moves more quickly.
+- `thinking` reuses the calm neutral treatment instead of introducing another animation.
+- `idle` and `error` fade away when the visual is passive.
+
+```tsx
+<Orb adapter={adapter} theme="cloud" interactive={false} />
+```
+
+The passive form works well when microphone and end-session buttons live elsewhere in the product
+layout. Call `adapter.start()` and `adapter.stop()` from those controls.
+
+## Circle
+
+Use `circle` when the voice agent is a primary assistant surface. It reads as an orb, status indicator, and voice presence at the same time.
+
+```tsx
+<Orb theme="circle" state="listening" volume={0.42} />
+```
+
+## Bars
+
+Use `bars` when you want a waveform-like audio visualization.
+
+```tsx
+<Orb theme="bars" state="speaking" volume={0.72} />
+```
+
+## Debug
+
+Use `debug` while wiring a provider adapter. It makes state and volume changes visible during integration.
+
+```tsx
+<Orb theme="debug" adapter={adapter} />
+```
+
+## Voice states
+
+Each state should answer a user question:
+
+- `idle`: Is the assistant available?
+- `connecting`: Is the session starting?
+- `listening`: Did the app hear me?
+- `thinking`: Is the assistant processing?
+- `speaking`: Is the assistant responding?
+- `error`: Did something fail?
+
+Themes do not need a unique treatment for every state. They may intentionally reuse a calm visual
+when another animation would add noise without improving comprehension.
+
+Keep motion calm during idle states and more responsive during active voice states. Audio-reactive movement should support comprehension, not compete with the transcript or controls.
+
+## Accessibility and reduced motion
+
+Every production theme needs a nearby text label for the current state. Do not require a user to
+distinguish listening from speaking by color or animation alone. When the orb is the call control,
+pass an `aria-label`; when labeled controls live elsewhere, use `interactive={false}`.
+
+orb-ui respects reduced-motion preferences by limiting animation. Test that state copy, controls,
+and error recovery remain usable when motion is reduced or the canvas is unavailable.
+
+## Theme review checklist
+
+- Idle motion is quiet and does not imply that recording has started.
+- Connecting is visibly different from an active conversation.
+- Listening responds to microphone input when that level is available.
+- Speaking responds to assistant output instead of reusing the microphone meter.
+- Error has adjacent recovery copy and does not rely on color alone.
+- The theme works at the smallest size used in the product.
+- Keyboard focus and labels are clear for interactive variants.
+
+See the [voice orb UI example](/examples/voice-orb-ui) for controlled and provider-backed patterns,
+or the [React voice agent UI guide](/guides/voice-agent-ui) for the complete lifecycle design.

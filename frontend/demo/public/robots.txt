@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://orb-ui.com/sitemap.xml

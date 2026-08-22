@@ -1,0 +1,75 @@
+---
+title: Install orb-ui for React
+description: Install orb-ui, import the Orb component, and choose the integration path for your voice agent UI.
+---
+
+Install orb-ui from npm:
+
+```bash
+npm install orb-ui
+```
+
+orb-ui ships React components and TypeScript types. React and React DOM are peer dependencies, so your app should already include them.
+
+```tsx
+import { Orb } from 'orb-ui'
+
+export function VoiceAgentStatus() {
+  return <Orb state="idle" theme="circle" />
+}
+```
+
+## Provider SDKs
+
+Provider adapters live in the `orb-ui/adapters` entrypoint, but orb-ui does not bundle provider SDKs. Install the SDK for the provider you use:
+
+```bash
+# Vapi
+npm install orb-ui @vapi-ai/web
+
+# ElevenLabs Conversational AI
+npm install orb-ui @elevenlabs/client
+
+# LiveKit Agents
+npm install orb-ui livekit-client
+
+# Pipecat (add the transport used by your agent)
+npm install orb-ui @pipecat-ai/client-js @pipecat-ai/small-webrtc-transport
+
+# OpenAI Realtime uses browser WebRTC and needs no additional client SDK
+npm install orb-ui
+
+# Gemini Live
+npm install orb-ui @google/genai
+```
+
+```tsx
+import {
+  createElevenLabsAdapter,
+  createGeminiLiveAdapter,
+  createOpenAIRealtimeAdapter,
+  createPipecatAdapter,
+  createVapiAdapter,
+} from 'orb-ui/adapters'
+import { createLiveKitAdapter } from 'orb-ui/adapters/livekit'
+```
+
+Use an adapter when a supported provider owns the voice session. Use controlled mode when your app already has session state and audio volume.
+
+## Choose an integration path
+
+- Start with the [adapter overview](/adapters/overview) to compare the browser and server
+  responsibilities for each provider.
+- Use [controlled mode](/adapters/custom) when you are prototyping or wiring a custom realtime voice stack.
+- Use the [Vapi adapter](/adapters/vapi) for Vapi assistants.
+- Use the [ElevenLabs adapter](/adapters/elevenlabs) for ElevenLabs conversational agents.
+- Use the [LiveKit adapter](/adapters/livekit) for LiveKit Agents.
+- Use the [Pipecat adapter](/adapters/pipecat) with Pipecat Cloud, Daily, or self-hosted SmallWebRTC agents.
+- Use the [OpenAI Realtime adapter](/adapters/openai-realtime) for native browser WebRTC voice sessions.
+- Use the [Gemini Live adapter](/adapters/gemini-live) for native-audio Live API sessions.
+
+## Next steps
+
+- [Quickstart](/quickstart)
+- [Orb component API](/reference/orb-component)
+- [Themes and states](/themes/voice-states)

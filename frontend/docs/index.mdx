@@ -1,0 +1,51 @@
+---
+title: React voice agent UI documentation
+description: Build polished React voice agent UIs with animated orbs, provider adapters, audio-reactive themes, and controlled mode.
+---
+
+orb-ui is a React UI layer for realtime voice agents. It gives your app an animated voice orb, audio-reactive themes, provider adapters, and a controlled mode that can sit on top of custom voice AI stacks.
+
+Use orb-ui when you want users to understand whether a voice agent is idle, connecting, listening, thinking, speaking, or in an error state.
+
+## Start here
+
+1. Install `orb-ui`.
+2. Choose an adapter for Vapi, ElevenLabs, LiveKit, Pipecat, OpenAI Realtime, or Gemini Live, or use controlled mode.
+3. Pick a visual theme.
+4. Map your voice agent state into the Orb component.
+
+```tsx
+import { Orb } from 'orb-ui'
+
+export function VoiceAgentStatus({ state, volume }) {
+  return <Orb state={state} volume={volume} theme="circle" />
+}
+```
+
+## What orb-ui handles
+
+- A small React component for visible voice agent state.
+- Audio-reactive orb and bars themes.
+- Provider adapters for Vapi, ElevenLabs, LiveKit, Pipecat, OpenAI Realtime, and Gemini Live.
+- Controlled mode for telephony, custom WebRTC/WebSocket transports, and other speech pipelines.
+- A stable state model for `idle`, `connecting`, `listening`, `thinking`, `speaking`, and `error`.
+
+## What orb-ui does not handle
+
+orb-ui is not a voice agent platform. It does not host calls, manage prompts, run speech recognition, or replace Vapi, ElevenLabs, LiveKit, Pipecat, OpenAI Realtime, Gemini Live API, or your own backend. It is the frontend UI layer that makes those systems feel understandable inside a product.
+
+## Next steps
+
+- [Quickstart](/quickstart)
+- [Installation](/installation)
+- [Orb component API](/reference/orb-component)
+- [Voice agent UI guide](/guides/voice-agent-ui)
+- [Signal-based voice agent UI architecture](/guides/signal-based-voice-agent-ui)
+- [Compare provider adapters](/adapters/overview)
+- [Vapi adapter](/adapters/vapi)
+- [ElevenLabs adapter](/adapters/elevenlabs)
+- [LiveKit adapter](/adapters/livekit)
+- [Pipecat adapter](/adapters/pipecat)
+- [OpenAI Realtime adapter](/adapters/openai-realtime)
+- [Gemini Live adapter](/adapters/gemini-live)
+- [Custom integrations](/adapters/custom)

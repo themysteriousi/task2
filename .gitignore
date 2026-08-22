@@ -1,5 +1,31 @@
 venv/
+.venv/
 .env
+.env.local
 __pycache__/
+*.pyc
 *.parquet
 .pytest_cache/
+
+# Frontend dependencies & build
+node_modules/
+dist/
+build/
+.pnpm-store/
+
+# Logs
+*.log
+build_log.txt
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Data / large model files
+data/
+models/
+*.bin
+*.pt
+*.ckpt
+*.faiss
+*.index

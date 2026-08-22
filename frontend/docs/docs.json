@@ -1,0 +1,186 @@
+{
+  "$schema": "https://mintlify.com/docs.json",
+  "theme": "maple",
+  "name": "orb-ui",
+  "description": "React voice agent UI components for Vapi, ElevenLabs, LiveKit, Pipecat, OpenAI Realtime, Gemini Live, and custom voice AI apps.",
+  "colors": {
+    "primary": "#4da3ff",
+    "light": "#9fd2ff",
+    "dark": "#1f6feb"
+  },
+  "appearance": {
+    "default": "dark"
+  },
+  "icons": {
+    "library": "lucide"
+  },
+  "logo": {
+    "light": "/logo.svg",
+    "dark": "/logo.svg",
+    "href": "https://orb-ui.com"
+  },
+  "favicon": "/favicon.svg",
+  "navbar": {
+    "links": [
+      {
+        "label": "Home",
+        "href": "https://orb-ui.com"
+      },
+      {
+        "type": "github",
+        "href": "https://github.com/alexanderqchen/orb-ui"
+      }
+    ],
+    "primary": {
+      "type": "button",
+      "label": "npm",
+      "href": "https://www.npmjs.com/package/orb-ui"
+    }
+  },
+  "footer": {
+    "socials": {
+      "github": "https://github.com/alexanderqchen/orb-ui",
+      "website": "https://orb-ui.com"
+    }
+  },
+  "metadata": {
+    "timestamp": true
+  },
+  "seo": {
+    "metatags": {
+      "og:image": "https://orb-ui.com/og-image-v2.jpg",
+      "og:image:alt": "orb-ui — Voice agent UI that feels alive, with a blue animated voice orb.",
+      "twitter:image": "https://orb-ui.com/og-image-v2.jpg",
+      "twitter:image:alt": "orb-ui — Voice agent UI that feels alive, with a blue animated voice orb."
+    }
+  },
+  "integrations": {
+    "posthog": {
+      "apiKey": "phc_U5BI9zJCRMtmbd1nhlpg2e0cdsAymmgdbZpFYbVXBJQ",
+      "apiHost": "https://us.i.posthog.com",
+      "sessionRecording": true
+    }
+  },
+  "navigation": {
+    "groups": [
+      {
+        "group": "Start",
+        "icon": "rocket",
+        "pages": ["index", "quickstart", "installation"]
+      },
+      {
+        "group": "Reference",
+        "icon": "book-open",
+        "pages": ["reference/orb-component", "themes/voice-states"]
+      },
+      {
+        "group": "Adapters",
+        "icon": "plug",
+        "pages": [
+          "adapters/overview",
+          "adapters/vapi",
+          "adapters/elevenlabs",
+          "adapters/livekit",
+          "adapters/pipecat",
+          "adapters/openai-realtime",
+          "adapters/gemini-live",
+          "adapters/custom"
+        ]
+      },
+      {
+        "group": "Guides",
+        "icon": "library",
+        "pages": [
+          "guides/voice-agent-ui",
+          "guides/signal-based-voice-agent-ui",
+          "examples/voice-orb-ui",
+          "guides/voice-agent-platforms",
+          "guides/ai-voice-sales-agents",
+          "guides/voice-ai-customer-support"
+        ]
+      }
+    ]
+  },
+  "redirects": [
+    {
+      "source": "/vapi-voice-ui",
+      "destination": "/adapters/vapi"
+    },
+    {
+      "source": "/vapi-voice-ui/",
+      "destination": "/adapters/vapi"
+    },
+    {
+      "source": "/elevenlabs-voice-ui",
+      "destination": "/adapters/elevenlabs"
+    },
+    {
+      "source": "/elevenlabs-voice-ui/",
+      "destination": "/adapters/elevenlabs"
+    },
+    {
+      "source": "/pipecat-voice-ui",
+      "destination": "/adapters/pipecat"
+    },
+    {
+      "source": "/pipecat-voice-ui/",
+      "destination": "/adapters/pipecat"
+    },
+    {
+      "source": "/openai-realtime-voice-ui",
+      "destination": "/adapters/openai-realtime"
+    },
+    {
+      "source": "/openai-realtime-voice-ui/",
+      "destination": "/adapters/openai-realtime"
+    },
+    {
+      "source": "/gemini-live-voice-ui",
+      "destination": "/adapters/gemini-live"
+    },
+    {
+      "source": "/gemini-live-voice-ui/",
+      "destination": "/adapters/gemini-live"
+    },
+    {
+      "source": "/providers/openai-realtime",
+      "destination": "/adapters/openai-realtime"
+    },
+    {
+      "source": "/providers/openai-realtime/",
+      "destination": "/adapters/openai-realtime"
+    },
+    {
+      "source": "/providers/gemini-live",
+      "destination": "/adapters/gemini-live"
+    },
+    {
+      "source": "/providers/gemini-live/",
+      "destination": "/adapters/gemini-live"
+    },
+    {
+      "source": "/resources/voice-agent-platforms",
+      "destination": "/guides/voice-agent-platforms"
+    },
+    {
+      "source": "/resources/voice-agent-platforms/",
+      "destination": "/guides/voice-agent-platforms"
+    },
+    {
+      "source": "/resources/ai-voice-sales-agents",
+      "destination": "/guides/ai-voice-sales-agents"
+    },
+    {
+      "source": "/resources/ai-voice-sales-agents/",
+      "destination": "/guides/ai-voice-sales-agents"
+    },
+    {
+      "source": "/resources/voice-ai-customer-support",
+      "destination": "/guides/voice-ai-customer-support"
+    },
+    {
+      "source": "/resources/voice-ai-customer-support/",
+      "destination": "/guides/voice-ai-customer-support"
+    }
+  ]
+}
