@@ -37,15 +37,21 @@ class HierarchicalSemanticChunker:
         processed_chunks = []
 
         for record in records:
-            query_id = record["query_id"]
-            passages = record["translated_passages"]
-            is_selected = record["is_selected"]
+            query_id = record.get("query_id", "unknown")
+            if "passage_text" in record:
+                passages = [record["passage_text"]]
+                is_selected = [record.get("is_selected", 0)]
+            else:
+                passages = record.get("translated_passages", [])
+                is_selected = record.get("is_selected", [])
 
             for passage_idx, parent_passage in enumerate(passages):
-                if not parent_passage.strip():
+                if not parent_passage or not str(parent_passage).strip():
                     continue
 
-                parent_id = f"parent_{query_id}_{passage_idx}"
+                parent_passage = str(parent_passage)
+                passage_id = record.get("passage_id", f"{query_id}_{passage_idx}")
+                parent_id = f"parent_{passage_id}"
                 selected_flag = bool(is_selected[passage_idx]) if passage_idx < len(is_selected) else False
 
                 # Generate child chunks for high-resolution vector lookup
@@ -63,7 +69,7 @@ class HierarchicalSemanticChunker:
                             "child_index": child_idx,
                             "is_selected": selected_flag,
                             "query_type": record.get("query_type"),
-                            "target_lang": record.get("target_lang")
+                            "target_lang": record.get("lang") or record.get("target_lang")
                         }
                     })
 

@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { Orb } from 'orb-ui'
 import type { OrbSignal, OrbState, OrbTheme } from 'orb-ui'
+import { Agentation } from 'agentation'
 import { highlightTsx } from './syntax-highlight'
 
 // Constants
@@ -2110,6 +2111,9 @@ export default function App() {
           </span>
         </div>
       </footer>
+
+      {/* Agentation for UI feedback in dev */}
+      {import.meta.env.DEV && <Agentation endpoint="http://localhost:4747" />}
     </div>
   )
 }

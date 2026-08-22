@@ -1,5 +1,5 @@
 import logging
-from typing import Dict, Any, Generator, List, Union
+from typing import Dict, Any, Generator, List, Union, Optional
 from huggingface_hub import hf_hub_download
 import pyarrow.parquet as pq
 
@@ -10,33 +10,37 @@ logger = logging.getLogger("DatasetLoader")
 LANG_FILES = {
     "hi": "train/hintrain.parquet",
     "bn": "train/bentrain.parquet",
-    "gu": "train/gutrain.parquet",
+    "gu": "train/gujtrain.parquet",
     "mr": "train/martrain.parquet",
     "ta": "train/tamtrain.parquet",
     "te": "train/teltrain.parquet",
     "kn": "train/kantrain.parquet",
     "ml": "train/maltrain.parquet",
     "pa": "train/pantrain.parquet",
-    "or": "train/ortrain.parquet",
+    "or": "train/oritrain.parquet",
     "as": "train/asmtrain.parquet",
     "ne": "train/neptrain.parquet",
     "sa": "train/santrain.parquet",
     "ur": "train/urdtrain.parquet",
+    "en": "train/hintrain.parquet",  # English is embedded in every Indic file
 }
 
 class MSMARCOLoader:
-    def __init__(self, langs: Union[str, List[str]] = "hi"):
+    def __init__(self, langs: Union[str, List[str]] = "hi", lang: Optional[str] = None):
         """
         :param langs: Single lang code 'hi', list of codes ['hi', 'bn'], or 'all'.
+        :param lang: Alternative single lang parameter for backwards compatibility.
         """
-        if langs == "all":
+        chosen = lang if lang is not None else langs
+        if chosen == "all":
             self.selected_langs = list(LANG_FILES.keys())
-        elif isinstance(langs, str):
-            self.selected_langs = [langs]
+        elif isinstance(chosen, str):
+            self.selected_langs = [chosen]
         else:
-            self.selected_langs = langs
+            self.selected_langs = chosen
 
     def stream_records(self, max_records: int = 1000) -> Generator[Dict[str, Any], None, None]:
+        import os
         count = 0
 
         for lang in self.selected_langs:
@@ -48,16 +52,19 @@ class MSMARCOLoader:
                 logger.warning(f"Language code '{lang}' not recognized. Skipping.")
                 continue
 
-            logger.info(f"Loading '{lang}' via Hugging Face local cache ({filename})...")
-            
-            # Downloads with resume/retries and caches locally on disk
-            local_path = hf_hub_download(
-                repo_id="ai4bharat/MSMARCO-XI",
-                filename=filename,
-                repo_type="dataset"
-            )
-
-            logger.info(f"Successfully loaded '{lang}' from: {local_path}")
+            # Check if file exists locally in ./data/ first
+            local_data_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "data", filename)
+            if os.path.exists(local_data_path):
+                local_path = local_data_path
+                logger.info(f"Loading '{lang}' from local project directory: {local_path}")
+            else:
+                logger.info(f"Loading '{lang}' via Hugging Face local cache ({filename})...")
+                local_path = hf_hub_download(
+                    repo_id="ai4bharat/MSMARCO-XI",
+                    filename=filename,
+                    repo_type="dataset"
+                )
+                logger.info(f"Successfully loaded '{lang}' from: {local_path}")
             parquet_file = pq.ParquetFile(local_path)
 
             for batch in parquet_file.iter_batches(batch_size=128):

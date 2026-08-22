@@ -3,7 +3,7 @@ import logging
 from typing import Dict, Any, AsyncGenerator
 from pydantic import BaseModel
 
-from vector_store.qdrant_engine import QdrantVectorStore
+from vector_store.qdrant_engine import QdrantVectorEngine
 from model_harness.nemotron_client import NemotronClient
 from model_harness.guardrails import PipelineGuardrails
 
@@ -18,8 +18,9 @@ class RAGResponseSchema(BaseModel):
     grounded: bool
 
 class StatefulRAGOrchestrator:
-    def __init__(self, vector_store: QdrantVectorStore):
+    def __init__(self, vector_store: QdrantVectorEngine, embed_model):
         self.vector_store = vector_store
+        self.embed_model = embed_model
         self.nemotron_client = NemotronClient()
         self.guardrails = PipelineGuardrails()
 
@@ -43,7 +44,8 @@ class StatefulRAGOrchestrator:
 
         # 2. Vector Store Retrieval
         retrieval_start = time.perf_counter()
-        retrieved_docs = self.vector_store.search(query=query, top_k=top_k)
+        query_vector = self.embed_model.encode(query).tolist()
+        retrieved_docs = self.vector_store.search(query_vector=query_vector, top_k=top_k)
         retrieval_time = (time.perf_counter() - retrieval_start) * 1000
         logger.info(f"Retrieved {len(retrieved_docs)} contexts in {retrieval_time:.2f}ms")
 

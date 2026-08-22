@@ -40,18 +40,19 @@ class QdrantVectorEngine:
         print(f"[VectorDB] Indexed {len(points)} vectors successfully.")
 
     def search(self, query_vector: List[float], top_k: int = 3) -> List[Dict[str, Any]]:
-        results = self.client.search(
+        results = self.client.query_points(
             collection_name=self.collection_name,
-            query_vector=query_vector,
+            query=query_vector,
             limit=top_k
         )
         
         retrieved_contexts = []
-        for res in results:
+        for res in results.points:
+            payload = res.payload or {}
             retrieved_contexts.append({
                 "score": res.score,
-                "child_text": res.payload.get("child_text"),
-                "parent_context": res.payload.get("parent_text"),
-                "query_id": res.payload.get("query_id")
+                "child_text": payload.get("child_text"),
+                "parent_context": payload.get("parent_text"),
+                "query_id": payload.get("query_id")
             })
         return retrieved_contexts

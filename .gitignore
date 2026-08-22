@@ -24,8 +24,14 @@ Thumbs.db
 # Data / large model files
 data/
 models/
+qdrant_data/
 *.bin
 *.pt
 *.ckpt
 *.faiss
 *.index
+*.wav
+
+# Vercel
+.vercel
+
