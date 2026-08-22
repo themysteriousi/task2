@@ -1,0 +1,33 @@
+# Version control
+.git
+.gitignore
+
+# Python virtual environment & cache
+.venv
+venv
+__pycache__
+*.pyc
+*.pyo
+.pytest_cache
+
+# Large datasets and vector DB data
+data/
+qdrant_data/
+models/
+*.parquet
+*.bin
+*.pt
+*.ckpt
+*.faiss
+*.index
+*.wav
+
+# Node / frontend builds & modules (Vercel builds them on server)
+node_modules/
+frontend/node_modules/
+frontend/demo/node_modules/
+.pnpm-store/
+
+# OS / logs
+.DS_Store
+*.log
