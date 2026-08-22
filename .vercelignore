@@ -5,6 +5,7 @@
 # Python virtual environment & cache
 .venv
 venv
+requirements.txt
 __pycache__
 *.pyc
 *.pyo

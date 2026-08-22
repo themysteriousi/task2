@@ -1,5 +1,8 @@
 {
   "version": 2,
+  "buildCommand": null,
+  "framework": null,
+  "outputDirectory": ".",
   "rewrites": [
     {
       "source": "/query/stream",
